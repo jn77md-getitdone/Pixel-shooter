@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#14201a">
+  <title>Pixel Soldier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="game">
+    <!-- Selve spillet tegnes på dette lærred -->
+    <canvas id="screen"></canvas>
+
+    <!-- Point og niveau (vises under spillet) -->
+    <div id="hud" class="hidden">
+      <div id="hud-score">0</div>
+      <div id="hud-level">NIVEAU 1</div>
+    </div>
+
+    <button id="mute-btn" aria-label="Lyd til/fra">LYD</button>
+
+    <!-- Tekst der dukker kort op, fx "NIVEAU 2" -->
+    <div id="banner"></div>
+
+    <!-- Touch-knapper til iPad -->
+    <div id="controls" class="hidden">
+      <div id="dpad">
+        <div class="arrow up"></div>
+        <div class="arrow left"></div>
+        <div class="arrow right"></div>
+        <div class="arrow down"></div>
+      </div>
+      <div id="fire-btn">SKYD</div>
+    </div>
+
+    <!-- Startskærm -->
+    <div id="start-screen" class="screen">
+      <h1>PIXEL<br>SOLDIER</h1>
+      <canvas id="title-soldier" width="12" height="15"></canvas>
+      <p>Skyd fjenderne og overlev<br>så længe som muligt!</p>
+      <button id="start-btn" class="big-btn">START</button>
+      <p class="hint keyboard-hint">Computer: piletaster / WASD flytter, MELLEMRUM skyder</p>
+      <p class="best">REKORD: <span id="start-best">0</span></p>
+    </div>
+
+    <!-- Game over-skærm -->
+    <div id="gameover-screen" class="screen hidden">
+      <h1>GAME OVER</h1>
+      <p>POINT: <span id="final-score">0</span></p>
+      <p id="new-record" class="hidden">NY REKORD!</p>
+      <p class="best">REKORD: <span id="best-score">0</span></p>
+      <button id="restart-btn" class="big-btn">SPIL IGEN</button>
+    </div>
+  </div>
+
+  <!-- Rækkefølgen er vigtig: hver fil bruger ting fra filerne over den -->
+  <script src="js/sprites.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
