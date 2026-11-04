@@ -22,6 +22,7 @@ body { position: fixed; inset: 0; }
 #game {
   position: absolute;
   inset: 0;
+  background: #1c3020;
   font-family: var(--font);
   color: #fff;
 }
@@ -38,6 +39,14 @@ body { position: fixed; inset: 0; }
 
 .hidden { display: none !important; }
 
+/* Usynlig: bruges kun til at måle notch/afrundede hjørner */
+#safe-probe {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
 /* ---------- HUD ---------- */
 #hud {
   position: absolute;
@@ -47,6 +56,7 @@ body { position: fixed; inset: 0; }
   pointer-events: none;
   text-shadow: 3px 3px 0 #000;
 }
+#hud { padding-left: env(safe-area-inset-left); }
 #hud-score {
   text-align: center;
   font-size: clamp(14px, 3.2vmin, 26px);
@@ -224,3 +234,50 @@ body { position: fixed; inset: 0; }
 
 /* Tastatur-hjælpen giver ingen mening på en ren touch-skærm */
 .touch .keyboard-hint { display: none; }
+
+/* ---------- Telefon / iPad på højkant ----------
+   Spillet fylder den øverste del, knapperne har deres eget felt i bunden */
+body.portrait {
+  --dpad-size: min(42vw, 190px);
+  --fire-size: min(28vw, 130px);
+  --panel-h: calc(var(--dpad-size) + 32px + env(safe-area-inset-bottom));
+}
+body.portrait #screen {
+  height: calc(100% - var(--panel-h));
+  bottom: auto;
+  border-bottom: 3px solid #0e1a10;
+}
+body.portrait #controls {
+  top: auto;
+  height: var(--panel-h);
+}
+body.portrait #dpad {
+  --size: var(--dpad-size);
+  bottom: calc(16px + env(safe-area-inset-bottom));
+}
+body.portrait #fire-btn {
+  --size: var(--fire-size);
+  bottom: calc(16px + env(safe-area-inset-bottom) + (var(--dpad-size) - var(--fire-size)) / 2);
+  background: rgba(224, 74, 58, 0.85);
+}
+body.portrait .arrow { background: rgba(255, 255, 255, 0.08); }
+body.portrait .arrow.active { background: rgba(126, 217, 87, 0.6); }
+
+/* Lav skærm (telefon på langs): gør startskærmen mere kompakt */
+@media (max-height: 460px) {
+  #title-soldier { display: none; }
+  .screen { gap: 8px; padding: 10px; }
+  .screen h1 { font-size: clamp(22px, 9vmin, 40px); }
+  .big-btn { font-size: 18px; padding: 0.6em 1.4em; }
+  #mute-btn { font-size: 9px; padding: 6px; }
+}
+
+/* Smal skærm: flyt niveau-teksten ned under LYD-knappen */
+@media (max-width: 600px) {
+  #hud-level { top: 30px; right: calc(10px + env(safe-area-inset-right)); }
+}
+/* Telefon på langs: lidt større knapper */
+@media (max-height: 460px) {
+  #dpad { --size: 44vmin; }
+  #fire-btn { --size: 32vmin; }
+}

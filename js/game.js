@@ -5,6 +5,7 @@
 // ---------- Indstillinger (prøv at ændre dem!) ----------
 const SETTINGS = {
   shortSide: 200,        // så mange "spil-pixels" er der på skærmens korte led
+  shortSidePhone: 150,   // ... og på små skærme (telefon), så figurerne bliver større
   levelDuration: 20,     // sekunder pr. niveau
   bulletSpeed: 210,
   enemyBulletSpeed: 65,
@@ -52,6 +53,8 @@ const game = {
   state: 'start',        // 'start' | 'playing' | 'gameover'
   W: 320,
   H: 200,
+  safeLeft: 0,
+  safeTop: 0,
   time: 0,
   level: 1,
   levelTimer: 0,
@@ -95,11 +98,21 @@ const game = {
 let background = null;
 
 function resize() {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const scale = Math.min(vw, vh) / SETTINGS.shortSide;
+  // Telefon/iPad på højkant: knapperne får deres eget felt under spillet
+  document.body.classList.toggle('portrait', isTouch && window.innerHeight > window.innerWidth);
+
+  // Lærredet fylder det område, CSS giver det
+  const vw = canvas.clientWidth || window.innerWidth;
+  const vh = canvas.clientHeight || window.innerHeight;
+  const small = Math.min(window.innerWidth, window.innerHeight) < 600;
+  const scale = Math.min(vw, vh) / (small ? SETTINGS.shortSidePhone : SETTINGS.shortSide);
   game.W = Math.round(vw / scale);
   game.H = Math.round(vh / scale);
+
+  // Plads til notch / afrundede hjørner (omregnet til spil-pixels)
+  const probe = getComputedStyle(document.getElementById('safe-probe'));
+  game.safeLeft = (parseFloat(probe.paddingLeft) || 0) / scale;
+  game.safeTop = (parseFloat(probe.paddingTop) || 0) / scale;
   canvas.width = game.W;
   canvas.height = game.H;
   ctx.imageSmoothingEnabled = false;
@@ -425,7 +438,7 @@ function render() {
     for (let i = 0; i < p.maxHearts; i++) {
       const spr = i < p.hearts ? Sprites.heart : Sprites.heartEmpty;
       if (i >= p.hearts && i >= 3) continue; // vis kun ekstra-hjerter hvis man har dem
-      drawSprite(ctx, spr, 0, 8 + i * 9, 8);
+      drawSprite(ctx, spr, 0, Math.round(game.safeLeft) + 8 + i * 9, Math.round(game.safeTop) + 8);
     }
   }
 }
@@ -457,6 +470,7 @@ function init() {
   resize();
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
 
   // Lille soldat på startskærmen
   const tc = document.getElementById('title-soldier');
